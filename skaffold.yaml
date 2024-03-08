@@ -1,0 +1,74 @@
+apiVersion: skaffold/v2alpha3
+kind: Config
+deploy:
+  kubectl:
+    # start: it means that There is a collection of kubernetes inside ./infra/k8s dir >  watch everything inside ./infra/k8s > if any changes the kubectl apply - .
+    # it do thre tasks
+    # 1. if start skaffold then apply
+    # 2. if change within ./infra/k8s then apply
+    # 3. if stop skaffold then close all objects
+    manifests:
+      - ./infra/k8s/*
+    # end: it means that There is a collection of kubernetes inside ./infra/k8s dir >  watch everything inside ./infra/k8s > if any changes the kubectl apply - .
+build:
+  # start: by default if project is re-build then skaffold try to push docker hub
+  local:
+    push: false
+  # end: by default if project is re-build then skaffold try to push docker hub
+
+  artifacts:
+    # start: look at jahidhiron/client image at docker hub
+    - image: jahidhiron/client
+      # end: look at jahidhiron/client image at docker hub
+
+      # start: look at client pod
+      context: client
+      # end: look at client pod
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          # start: if any change happen to .js file of under bellow dir then directly change to pod otherwise if any change happen except this .js file under bellow dir then rebuild
+          - src: "src/**/*.js"
+            dest: .
+          # end: if any change happen to .js file of under bellow dir then directly change to pod otherwise if any change happen except this .js file under bellow dir then rebuild
+    - image: jahidhiron/comments
+      context: comments
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "*.js"
+            dest: .
+    - image: jahidhiron/event-bus
+      context: event-bus
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "*.js"
+            dest: .
+    - image: jahidhiron/moderation
+      context: moderation
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "*.js"
+            dest: .
+    - image: jahidhiron/posts
+      context: posts
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "*.js"
+            dest: .
+    - image: jahidhiron/query
+      context: query
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "*.js"
+            dest: .

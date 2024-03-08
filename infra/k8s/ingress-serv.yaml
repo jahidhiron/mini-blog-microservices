@@ -1,0 +1,47 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  # start: understand ingress-controller that we are feeding some routing rules
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # End: understand ingress-controller that we are feeding some routing rules
+
+    # start: it helps us to set regex in ingress ontroller route rule
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    # end: it helps us to set regex in ingress ontroller route rule
+spec:
+  rules:
+    - host: posts.com
+      http:
+        paths:
+          - pathType: Prefix
+            path: /posts
+            backend:
+              service:
+                name: posts-clusterip-srv
+                port:
+                  number: 8000
+          - pathType: Prefix
+            path: /posts
+            backend:
+              service:
+                name: query-srv
+                port:
+                  number: 8002
+          - pathType: Prefix
+            path: /posts/?(.*)/comments # ?(.*) -> anything you can pass here
+            backend:
+              service:
+                name: comments-srv
+                port:
+                  number: 8001
+          - pathType: Prefix
+            # start: normally we pass here / but for single page application like react, /?(.*) -> it means that it allows us to set ant path. For example we use react-router-dom to set routing in react as single page application
+            path: /?(.*)
+            # end: normally we pass here / but for single page application like react, /?(.*) -> it means that it allows us to set ant path. For example we use react-router-dom to set routing in react as single page application
+            backend:
+              service:
+                name: client-srv
+                port:
+                  number: 3000
