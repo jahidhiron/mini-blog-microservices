@@ -18,6 +18,7 @@ This is a mini blog microservice for learning purpose where implement custom eve
 Install Docker
 Install Kubernetes
 Install Skaffold
+Install MongoDb NoSql Database
 
 ```bash
 git clone https://github.com/jahidhiron/mini-blog-microservices.git
@@ -37,5 +38,4 @@ skaffold dev
 
 ## License
 
-Specify the license under which your project is distributed. For example:
 This project is licensed under the MIT License.
